@@ -1,5 +1,4 @@
 # Dependencies
 node_modules/
-config.env
-
+config.env/
 
