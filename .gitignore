@@ -1,4 +1,5 @@
-# Dependencies
-node_modules
-config.env/
+node_modules/
 
+config.env
+
+uploads/``
