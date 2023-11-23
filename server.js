@@ -17,10 +17,15 @@ const mountRoutes = require('./routes');
 const { webhookCheckout } = require('./services/orderService');
 
 // Connect with db
-dbConnection();
+// dbConnection();
+
 
 // express app
 const app = express();
+
+
+//////////////////////////
+
 
 // Enable other domains to access your application
 app.use(cors());
@@ -79,16 +84,40 @@ app.all('*', (req, res, next) => {
 // Global error handling middleware for express
 app.use(globalError);
 
+////////////////////////////
+const { MongoClient } = require('mongodb');
+
+
+
+
+const uri = process.env.DB_URI;
+const client = new MongoClient(uri);
+
+app.get("/items/:my_item", async (req, res) => {
+    let my_item = req.params.my_item;
+    let item = await client.db("my_db")
+                .collection("my_collection")
+                .findOne({my_item: my_item})
+
+    return res.json(item)
+})
+
+client.connect(err => {
+    if(err){ console.error(err); return false;}
+
+
 const PORT = process.env.PORT || 8000;
 const server = app.listen(PORT, () => {
   console.log(`App running running on port ${PORT}`);
 });
 
 // Handle rejection outside express
-process.on('unhandledRejection', (err) => {
-  console.error(`UnhandledRejection Errors: ${err.name} | ${err.message}`);
+process.on('unhandledRejection', (errr) => {
+  console.error(`UnhandledRejection Errors: ${errr.name} | ${errr.message}`);
   server.close(() => {
     console.error(`Shutting down....`);
     process.exit(1);
   });
 });
+});
+
