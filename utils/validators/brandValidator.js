@@ -1,16 +1,20 @@
 const slugify = require('slugify');
 const { check, body } = require('express-validator');
-const {
-  validatorMiddleware,
-} = require('../../middlewares/validatorMiddleware');
+const validatorMiddleware = require('../../middlewares/validatorMiddleware');
 
-// check() => check body and params etc
+exports.getBrandValidator = [
+  check('id').isMongoId().withMessage('Invalid Brand id format'),
+  validatorMiddleware,
+];
+
 exports.createBrandValidator = [
   check('name')
-    .isLength({ min: 3 })
-    .withMessage('must be at least 3 chars')
     .notEmpty()
     .withMessage('Brand required')
+    .isLength({ min: 3 })
+    .withMessage('Too short Brand name')
+    .isLength({ max: 32 })
+    .withMessage('Too long Brand name')
     .custom((val, { req }) => {
       req.body.slug = slugify(val);
       return true;
@@ -18,13 +22,8 @@ exports.createBrandValidator = [
   validatorMiddleware,
 ];
 
-exports.getBrandValidator = [
-  check('id').isMongoId().withMessage('Invalid ID formate'),
-  validatorMiddleware,
-];
-
 exports.updateBrandValidator = [
-  check('id').isMongoId().withMessage('Invalid ID formate'),
+  check('id').isMongoId().withMessage('Invalid Brand id format'),
   body('name')
     .optional()
     .custom((val, { req }) => {
@@ -35,6 +34,6 @@ exports.updateBrandValidator = [
 ];
 
 exports.deleteBrandValidator = [
-  check('id').isMongoId().withMessage('Invalid ID formate'),
+  check('id').isMongoId().withMessage('Invalid Brand id format'),
   validatorMiddleware,
 ];

@@ -1,34 +1,52 @@
 const express = require('express');
 const {
+  getBrandValidator,
+  createBrandValidator,
+  updateBrandValidator,
+  deleteBrandValidator,
+} = require('../utils/validators/brandValidator');
+
+const authService = require('../services/authService');
+
+const {
   getBrands,
-  createBrand,
   getBrand,
+  createBrand,
   updateBrand,
   deleteBrand,
   uploadBrandImage,
   resizeImage,
-  deleteAll,
-} = require('../controllers/brandController');
-const {
-  createBrandValidator,
-  getBrandValidator,
-  updateBrandValidator,
-  deleteBrandValidator,
-} = require('../utils/validators/brandValidator');
+} = require('../services/brandService');
 
 const router = express.Router();
 
 router
   .route('/')
   .get(getBrands)
-  .post(uploadBrandImage, resizeImage, createBrandValidator, createBrand)
-  .delete(deleteAll);
-
-// router.use(idValidation);
+  .post(
+    authService.protect,
+    authService.allowedTo('admin', 'manager','user'),
+    uploadBrandImage,
+    resizeImage,
+    createBrandValidator,
+    createBrand
+  );
 router
   .route('/:id')
   .get(getBrandValidator, getBrand)
-  .put(uploadBrandImage, resizeImage, updateBrandValidator, updateBrand)
-  .delete(deleteBrandValidator, deleteBrand);
+  .put(
+    authService.protect,
+    authService.allowedTo('admin', 'manager'),
+    uploadBrandImage,
+    resizeImage,
+    updateBrandValidator,
+    updateBrand
+  )
+  .delete(
+    authService.protect,
+    authService.allowedTo('admin'),
+    deleteBrandValidator,
+    deleteBrand
+  );
 
 module.exports = router;

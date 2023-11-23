@@ -4,8 +4,8 @@ const productSchema = new mongoose.Schema(
   {
     title: {
       type: String,
+      required: true,
       trim: true,
-      required: [true, 'Product title is required'],
       minlength: [3, 'Too short product title'],
       maxlength: [100, 'Too long product title'],
     },
@@ -17,7 +17,7 @@ const productSchema = new mongoose.Schema(
     description: {
       type: String,
       required: [true, 'Product description is required'],
-      maxlength: [2000, 'Too long description'],
+      minlength: [20, 'Too short product description'],
     },
     quantity: {
       type: Number,
@@ -31,12 +31,13 @@ const productSchema = new mongoose.Schema(
       type: Number,
       required: [true, 'Product price is required'],
       trim: true,
-      maxlength: [32, 'To long price'],
+      max: [200000, 'Too long product price'],
     },
     priceAfterDiscount: {
       type: Number,
     },
-    availableColors: [String],
+    colors: [String],
+
     imageCover: {
       type: String,
       required: [true, 'Product Image cover is required'],
@@ -45,9 +46,9 @@ const productSchema = new mongoose.Schema(
     category: {
       type: mongoose.Schema.ObjectId,
       ref: 'Category',
-      required: [true, 'Product must be belong to a category'],
+      required: [true, 'Product must be belong to category'],
     },
-    subcategory: [
+    subcategories: [
       {
         type: mongoose.Schema.ObjectId,
         ref: 'SubCategory',
@@ -59,47 +60,60 @@ const productSchema = new mongoose.Schema(
     },
     ratingsAverage: {
       type: Number,
-      // default: 0,
       min: [1, 'Rating must be above or equal 1.0'],
       max: [5, 'Rating must be below or equal 5.0'],
-      set: (val) => Math.round(val * 10) / 10, // 3.6666 * 10 = 36.666  = 37 = 3.7
+      // set: (val) => Math.round(val * 10) / 10, // 3.3333 * 10 => 33.333 => 33 => 3.3
     },
     ratingsQuantity: {
       type: Number,
       default: 0,
     },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+    // to enable virtual populate
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+  }
 );
 
-// Virtual populate (don't add it know, add it after create review schema)
-// productSchema.virtual('reviews', {
-//   ref: 'Review',
-//   foreignField: 'product',
-//   localField: '_id',
-// });
-
-const setImageUrl = (doc) => {
-  if (doc.imageCover) {
-    const imageCoverUrl = `${process.env.BASE_URL}/products/${doc.imageCover}`;
-    doc.imageCover = imageCoverUrl;
-  }
-  if (doc.images) {
-    const images = [];
-    doc.images.forEach((image) => {
-      const imageUrl = `${process.env.BASE_URL}/products/${image}`;
-      images.push(imageUrl);
-    });
-    doc.images = images;
-  }
-};
-
-productSchema.post('init', (doc) => {
-  setImageUrl(doc);
+productSchema.virtual('reviews', {
+  ref: 'Review',
+  foreignField: 'product',
+  localField: '_id',
 });
 
+// Mongoose query middleware
+productSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'category',
+    select: 'name -_id',
+  });
+  next();
+});
+
+const setImageURL = (doc) => {
+  if (doc.imageCover) {
+    const imageUrl = `${process.env.BASE_URL}/products/${doc.imageCover}`;
+    doc.imageCover = imageUrl;
+  }
+  if (doc.images) {
+    const imagesList = [];
+    doc.images.forEach((image) => {
+      const imageUrl = `${process.env.BASE_URL}/products/${image}`;
+      imagesList.push(imageUrl);
+    });
+    doc.images = imagesList;
+  }
+};
+// findOne, findAll and update
+productSchema.post('init', (doc) => {
+  setImageURL(doc);
+});
+
+// create
 productSchema.post('save', (doc) => {
-  setImageUrl(doc);
+  setImageURL(doc);
 });
 
 module.exports = mongoose.model('Product', productSchema);

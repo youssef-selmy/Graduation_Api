@@ -1,54 +1,47 @@
 const slugify = require('slugify');
-const { check, body } = require('express-validator');
-const {
-  validatorMiddleware,
-} = require('../../middlewares/validatorMiddleware');
+const { check } = require('express-validator');
+const validatorMiddleware = require('../../middlewares/validatorMiddleware');
 const User = require('../../models/userModel');
-// Check email is email
-// check if password confirm = password
-// check if email already in user
-// make validation like schema
+
 exports.signupValidator = [
   check('name')
-    .isLength({ min: 3 })
-    .withMessage('must be at least 3 chars')
     .notEmpty()
-    .withMessage('name required field')
+    .withMessage('User required')
+    .isLength({ min: 3 })
+    .withMessage('Too short User name')
     .custom((val, { req }) => {
       req.body.slug = slugify(val);
       return true;
     }),
+
   check('email')
     .notEmpty()
-    .withMessage('Email required field')
+    .withMessage('Email required')
     .isEmail()
-    .withMessage('Invalid email formate')
+    .withMessage('Invalid email address')
     .custom((val) =>
       User.findOne({ email: val }).then((user) => {
         if (user) {
-          return Promise.reject(new Error(`E-mail already in use`));
+          return Promise.reject(new Error('E-mail already in user'));
         }
       })
     ),
+
   check('password')
     .notEmpty()
     .withMessage('Password required')
     .isLength({ min: 6 })
-    .withMessage('must be at least 6 chars')
-    .custom((val, { req }) => {
-      if (val !== req.body.passwordConfirm) {
-        throw new Error(`Password confirmation is incorrect`);
+    .withMessage('Password must be at least 6 characters')
+    .custom((password, { req }) => {
+      if (password !== req.body.passwordConfirm) {
+        throw new Error('Password Confirmation incorrect');
       }
       return true;
     }),
+
   check('passwordConfirm')
     .notEmpty()
-    .withMessage('passwordConfirm is required field'),
-
-  check('phone')
-    .optional()
-    .isMobilePhone('ar-EG')
-    .withMessage('accept only egypt phone numbers'),
+    .withMessage('Password confirmation required'),
 
   validatorMiddleware,
 ];
@@ -56,11 +49,15 @@ exports.signupValidator = [
 exports.loginValidator = [
   check('email')
     .notEmpty()
-    .withMessage('Email required field')
+    .withMessage('Email required')
     .isEmail()
-    .withMessage('Invalid email formate'),
+    .withMessage('Invalid email address'),
 
-  check('password').notEmpty().withMessage('Password required'),
+  check('password')
+    .notEmpty()
+    .withMessage('Password required')
+    .isLength({ min: 6 })
+    .withMessage('Password must be at least 6 characters'),
 
   validatorMiddleware,
 ];

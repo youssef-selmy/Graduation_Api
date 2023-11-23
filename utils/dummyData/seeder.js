@@ -12,10 +12,12 @@ dbConnection();
 // Read data
 const products = JSON.parse(fs.readFileSync('./products.json'));
 
+
 // Insert data into DB
 const insertData = async () => {
   try {
     await Product.create(products);
+
     console.log('Data Inserted'.green.inverse);
     process.exit();
   } catch (error) {
@@ -34,6 +36,7 @@ const destroyData = async () => {
   }
 };
 
+// node seeder.js -d
 if (process.argv[2] === '-i') {
   insertData();
 } else if (process.argv[2] === '-d') {
