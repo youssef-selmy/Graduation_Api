@@ -13,11 +13,11 @@ const ApiError = require('./utils/apiError');
 const globalError = require('./middlewares/errorMiddleware');
 const dbConnection = require('./config/database');
 // Routes
-const mountRoutes = require('./routes');
-const { webhookCheckout } = require('./services/orderService');
+
+
 
 // Connect with db
-// dbConnection();
+ dbConnection();
 
 
 // express app
@@ -33,13 +33,6 @@ app.options('*', cors());
 
 // compress all responses
 app.use(compression());
-
-// Checkout webhook
-app.post(
-  '/webhook-checkout',
-  express.raw({ type: 'application/json' }),
-  webhookCheckout
-);
 
 // Middlewares
 app.use(express.json({ limit: '20kb' }));
@@ -75,7 +68,7 @@ app.use(
 );
 
 // Mount Routes
-mountRoutes(app);
+
 
 app.all('*', (req, res, next) => {
   next(new ApiError(`Can't find this route: ${req.originalUrl}`, 400));
@@ -85,26 +78,6 @@ app.all('*', (req, res, next) => {
 app.use(globalError);
 
 ////////////////////////////
-const { MongoClient } = require('mongodb');
-
-
-
-
-const uri = process.env.DB_URI;
-const client = new MongoClient(uri);
-
-app.get("/items/:my_item", async (req, res) => {
-    let my_item = req.params.my_item;
-    let item = await client.db("my_db")
-                .collection("my_collection")
-                .findOne({my_item: my_item})
-
-    return res.json(item)
-})
-
-client.connect(err => {
-    if(err){ console.error(err); return false;}
-
 
 const PORT = process.env.PORT || 8000;
 const server = app.listen(PORT, () => {
@@ -112,12 +85,10 @@ const server = app.listen(PORT, () => {
 });
 
 // Handle rejection outside express
-process.on('unhandledRejection', (errr) => {
-  console.error(`UnhandledRejection Errors: ${errr.name} | ${errr.message}`);
+process.on('unhandledRejection', (err) => {
+  console.error(`UnhandledRejection Errors: ${err.name} | ${err.message}`);
   server.close(() => {
     console.error(`Shutting down....`);
     process.exit(1);
   });
 });
-});
-
