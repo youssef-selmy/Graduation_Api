@@ -13,8 +13,7 @@ const ApiError = require('./utils/apiError');
 const globalError = require('./middlewares/errorMiddleware');
 const dbConnection = require('./config/database');
 // Routes
-
-
+const authRoute=require('./routes/authRoute')
 
 // Connect with db
  dbConnection();
@@ -68,6 +67,7 @@ app.use(
 );
 
 // Mount Routes
+app.use('/api/v1/auth',authRoute)
 
 
 app.all('*', (req, res, next) => {

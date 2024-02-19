@@ -19,6 +19,7 @@ exports.signup = asyncHandler(async (req, res, next) => {
     name: req.body.name,
     email: req.body.email,
     password: req.body.password,
+    passwordConfirm:req.body.passwordConfirm,
   });
 
   // 2- Generate token
