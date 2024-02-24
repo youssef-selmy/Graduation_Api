@@ -14,6 +14,9 @@ const globalError = require('./middlewares/errorMiddleware');
 const dbConnection = require('./config/database');
 // Routes
 const authRoute=require('./routes/authRoute')
+const categoryRoute=require('./routes/categoryRoute')
+const subCategoryRoute=require('./routes/subCategoryRoute')
+
 
 // Connect with db
  dbConnection();
@@ -68,6 +71,9 @@ app.use(
 
 // Mount Routes
 app.use('/api/v1/auth',authRoute)
+app.use('/api/v1/category',categoryRoute)
+app.use('/api/v1/subcategory',subCategoryRoute)
+
 
 
 app.all('*', (req, res, next) => {
@@ -79,7 +85,7 @@ app.use(globalError);
 
 ////////////////////////////
 
-const PORT = process.env.PORT || 8000;
+const PORT = 3000;
 const server = app.listen(PORT, () => {
   console.log(`App running running on port ${PORT}`);
 });
