@@ -28,21 +28,21 @@ exports.resizeImage = asyncHandler(async (req, res, next) => {
 });
 
 // Get list of categories
-// GET /api/v1/categories
+// GET /api/v1/category
 exports.getCategories = factory.getAll(Category);
 
 //Get specific category by id
-//GET /api/v1/categories/:id
+//GET /api/v1/category/:id
 exports.getCategory = factory.getOne(Category);
 
 // Create category
-// POST /api/v1/categories
+// POST /api/v1/category
 exports.createCategory = factory.createOne(Category);
 
 // Update specific category
-// PUT /api/v1/categories/:id
+// PUT /api/v1/category/:id
 exports.updateCategory = factory.updateOne(Category);
 
 // Delete specific category
-// DELETE /api/v1/categories/:id
+// DELETE /api/v1/category/:id
 exports.deleteCategory = factory.deleteOne(Category);
