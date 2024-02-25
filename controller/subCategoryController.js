@@ -8,7 +8,7 @@ exports.setCategoryIdToBody = (req, res, next) => {
 };
 
 // Nested route
-// GET /api/v1/categories/:categoryId/subcategories
+// GET /api/v1/category/:categoryId/subcategory
 exports.createFilterObj = (req, res, next) => {
   let filterObject = {};
   if (req.params.categoryId) filterObject = { category: req.params.categoryId };
@@ -17,21 +17,21 @@ exports.createFilterObj = (req, res, next) => {
 };
 
 // Get list of subcategories
-// GET /api/v1/subcategories
+// GET /api/v1/subcategory
 exports.getSubCategories = factory.getAll(SubCategory);
 
 // Get specific subcategory by id
-// GET /api/v1/subcategories/:id
+// GET /api/v1/subcategory/:id
 exports.getSubCategory = factory.getOne(SubCategory);
 
 // Create subCategory
-// POST  /api/v1/subcategories
+// POST  /api/v1/subcategory
 exports.createSubCategory = factory.createOne(SubCategory);
 
 // Update specific subcategory
-// PUT /api/v1/subcategories/:id
+// PUT /api/v1/subcategory/:id
 exports.updateSubCategory = factory.updateOne(SubCategory);
 
 // Delete specific subCategory
-// DELETE /api/v1/subcategories/:id
+// DELETE /api/v1/subcategory/:id
 exports.deleteSubCategory = factory.deleteOne(SubCategory);
