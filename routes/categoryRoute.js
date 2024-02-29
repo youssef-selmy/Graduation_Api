@@ -15,20 +15,18 @@ const {
   deleteCategory,
   uploadCategoryImage,
   resizeImage,
-} = require('../controller/categoryController');
+} = require('../controller/categoryService');
 
 const subcategoriesRoute = require('./subCategoryRoute');
 
 const router = express.Router();
 
-// Nested route
 router.use('/:categoryId/subcategories', subcategoriesRoute);
 
 router
   .route('/')
   .get(getCategories)
   .post(
-
     uploadCategoryImage,
     resizeImage,
     createCategoryValidator,
@@ -38,16 +36,11 @@ router
   .route('/:id')
   .get(getCategoryValidator, getCategory)
   .put(
-    
     uploadCategoryImage,
     resizeImage,
     updateCategoryValidator,
     updateCategory
   )
-  .delete(
-    
-    deleteCategoryValidator,
-    deleteCategory
-  );
+  .delete(deleteCategoryValidator, deleteCategory);
 
 module.exports = router;
