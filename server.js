@@ -14,8 +14,8 @@ const globalError = require('./middlewares/errorMiddleware');
 const dbConnection = require('./config/database');
 // Routes
 const authRoute=require('./routes/authRoute')
-const categoryRoute=require('./routes/categoryRoute')
-const subCategoryRoute=require('./routes/subCategoryRoute')
+const categoryRoute = require('./routes/categoryRoute');
+const subCategoryRoute = require('./routes/subCategoryRoute');
 
 
 // Connect with db
@@ -36,8 +36,9 @@ app.options('*', cors());
 app.use(compression());
 
 // Middlewares
-app.use(express.json({ limit: '20kb' }));
+pp.use(express.json());
 app.use(express.static(path.join(__dirname, 'uploads')));
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
@@ -70,10 +71,14 @@ app.use(
 
 // Mount Routes
 app.use('/api/v1/auth',authRoute)
-app.use('/api/v1/category',categoryRoute)
-app.use('/api/v1/subcategory',subCategoryRoute)
+app.use('/api/v1/categories', categoryRoute);
+app.use('/api/v1/subcategories', subCategoryRoute);
 
 
+
+app.all('*', (req, res, next) => {
+  next(new ApiError(`Can't find this route: ${req.originalUrl}`, 400));
+});
 
 app.all('*', (req, res, next) => {
   next(new ApiError(`Can't find this route: ${req.originalUrl}`, 400));
@@ -82,9 +87,7 @@ app.all('*', (req, res, next) => {
 // Global error handling middleware for express
 app.use(globalError);
 
-////////////////////////////
-
-const PORT = 3000;
+const PORT = process.env.PORT || 8000;
 const server = app.listen(PORT, () => {
   console.log(`App running running on port ${PORT}`);
 });
@@ -97,3 +100,4 @@ process.on('unhandledRejection', (err) => {
     process.exit(1);
   });
 });
+
