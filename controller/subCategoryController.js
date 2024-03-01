@@ -1,4 +1,4 @@
-const factory = require('./handlersFactory');
+const factory = require('./handlersFactoryController');
 const SubCategory = require('../models/subCategoryModel');
 
 exports.setCategoryIdToBody = (req, res, next) => {
