@@ -36,7 +36,7 @@ app.options('*', cors());
 app.use(compression());
 
 // Middlewares
-pp.use(express.json());
+app.use(express.json());
 app.use(express.static(path.join(__dirname, 'uploads')));
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
