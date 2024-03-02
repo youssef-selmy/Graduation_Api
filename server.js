@@ -79,7 +79,7 @@ dbConnection((err) => {
     app.use(globalError);
 
     const PORT = process.env.PORT || 8000;
-    const server = app.listen(PORT, () => {
+    const server = app.listen(3000, () => {
       console.log(`App running running on port ${PORT}`);
     });
 
