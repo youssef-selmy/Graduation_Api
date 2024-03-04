@@ -1,4 +1,5 @@
 const path = require('path');
+
 const express = require('express');
 const dotenv = require('dotenv');
 const morgan = require('morgan');
@@ -12,84 +13,87 @@ const ApiError = require('./utils/apiError');
 const globalError = require('./middlewares/errorMiddleware');
 const dbConnection = require('./config/database');
 // Routes
-const authRoute = require('./routes/authRoute');
-const categoryRoute = require('./routes/categoryRoute');
-const subCategoryRoute = require('./routes/subCategoryRoute');
+const authRoute=require('./routes/authRoute')
+const categoryRoute=require('./routes/categoryRoute')
+const subCategoryRoute=require('./routes/subCategoryRoute')
+
 
 // Connect with db
-dbConnection((err) => {
-  if (err) {
-    console.error('MongoDB connection error:', err);
-    process.exit(1); // Exit the process if unable to connect to MongoDB
-  } else {
-    // Express app
-    const app = express();
+ dbConnection();
 
-    // Enable other domains to access your application
-    app.use(cors());
-    app.options('*', cors());
+// express app
+const app = express();
 
-    // compress all responses
-    app.use(compression());
 
-    // Middlewares
-    app.use(express.json());
-    app.use(express.static(path.join(__dirname, 'uploads')));
-    app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+//////////////////////////
 
-    if (process.env.NODE_ENV === 'development') {
-      app.use(morgan('dev'));
-      console.log(`mode: ${process.env.NODE_ENV}`);
-    }
 
-    // Limit each IP to 100 requests per `window` (here, per 15 minutes)
-    const limiter = rateLimit({
-      windowMs: 15 * 60 * 1000, // 15 minutes
-      max: 100,
-      message:
-        'Too many accounts created from this IP, please try again after an hour',
-    });
+// Enable other domains to access your application
+app.use(cors());
+app.options('*', cors());
 
-    // Apply the rate limiting middleware to all requests
-    app.use('/api', limiter);
+// compress all responses
+app.use(compression());
 
-    // Middleware to protect against HTTP Parameter Pollution attacks
-    app.use(
-      hpp({
-        whitelist: [
-          'price',
-          'sold',
-          'quantity',
-          'ratingsAverage',
-          'ratingsQuantity',
-        ],
-      })
-    );
+// Middlewares
+app.use(express.json({ limit: '20kb' }));
+app.use(express.static(path.join(__dirname, 'uploads')));
 
-    // Mount Routes
-    app.use('/api/v1/auth', authRoute);
-    app.use('/api/v1/categories', categoryRoute);
-    app.use('/api/v1/subcategories', subCategoryRoute);
+if (process.env.NODE_ENV === 'development') {
+  app.use(morgan('dev'));
+  console.log(`mode: ${process.env.NODE_ENV}`);
+}
 
-    app.all('*', (req, res, next) => {
-      next(new ApiError(`Can't find this route: ${req.originalUrl}`, 400));
-    });
+// Limit each IP to 100 requests per `window` (here, per 15 minutes)
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100,
+  message:
+    'Too many accounts created from this IP, please try again after an hour',
+});
 
-    // Global error handling middleware for express
-    app.use(globalError);
+// Apply the rate limiting middleware to all requests
+app.use('/api', limiter);
 
-    const PORT = process.env.PORT || 8000;
-    const server = app.listen(3000, () => {
-      console.log(`App running running on port ${PORT}`);
-    });
+// Middleware to protect against HTTP Parameter Pollution attacks
+app.use(
+  hpp({
+    whitelist: [
+      'price',
+      'sold',
+      'quantity',
+      'ratingsAverage',
+      'ratingsQuantity',
+    ],
+  })
+);
 
-    // Handle rejection outside express
-    process.on('unhandledRejection', (err) => {
-      console.error(`UnhandledRejection Errors: ${err.name} | ${err.message}`);
-      server.close(() => {
-        console.error(`Shutting down....`);
-        process.exit(1);
-      });
-    });
-  }
+// Mount Routes
+app.use('/api/v1/auth',authRoute)
+app.use('/api/v1/category',categoryRoute)
+app.use('/api/v1/subcategory',subCategoryRoute)
+
+
+
+app.all('*', (req, res, next) => {
+  next(new ApiError(`Can't find this route: ${req.originalUrl}`, 400));
+});
+
+// Global error handling middleware for express
+app.use(globalError);
+
+////////////////////////////
+
+const PORT = process.env.PORT;
+const server = app.listen(PORT, () => {
+  console.log(`App running running on port ${PORT}`);
+});
+
+// Handle rejection outside express
+process.on('unhandledRejection', (err) => {
+  console.error(`UnhandledRejection Errors: ${err.name} | ${err.message}`);
+  server.close(() => {
+    console.error(`Shutting down....`);
+    process.exit(1);
+  });
 });
