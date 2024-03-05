@@ -1,9 +1,11 @@
 const express = require("express");
+
 const productRouter = express.Router();
+const multer = require("multer");
 const productController = require("../controller/productsController");
 const {protect} = require("../controller/authController");
 // const subscriptionController = require('../controllers/subscription')
-const multer = require("multer");
+
 
 const storage = multer.memoryStorage();
 
