@@ -17,7 +17,7 @@ const authRoute=require('./routes/authRoute')
 const categoryRoute=require('./routes/categoryRoute')
 const subCategoryRoute=require('./routes/subCategoryRoute')
 const productsRoute=require('./routes/productsRoute')
-
+const brandRoute=require('./routes/brandRoute')
 
 // Connect with db
  dbConnection();
@@ -74,6 +74,7 @@ app.use('/api/v1/auth',authRoute)
 app.use('/api/v1/category',categoryRoute)
 app.use('/api/v1/subcategory',subCategoryRoute)
 app.use('/api/v1/products',productsRoute)
+app.use('/api/v1/brands',brandRoute)
 
 
 
