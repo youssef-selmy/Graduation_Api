@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const { Schema, model } = mongoose;
-const decode = require("../shared/base64");
+// const decode = require("../shared/base64");
 
 const value = {
   type: String,
@@ -26,12 +26,12 @@ const productSchema = new Schema(
       min: 0,
       required: true,
     },
-    reviews: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "review",
-      },
-    ],
+    // reviews: [
+    //   {
+    //     type: Schema.Types.ObjectId,
+    //     ref: "review",
+    //   },
+    // ],
     deleted: {
       type: Boolean,
       default: false,
@@ -45,15 +45,25 @@ const productSchema = new Schema(
       type: Boolean,
       default: false,
     },
-    images: {
-      type: Array,
+    imageCover: {
+      type: String,
+      required: [true, 'Product Image cover is required'],
     },
+    images: [String],
     variations: {
       type: Array,
     },
-    categories: {
-      type: Array,
+    category: {
+      type: mongoose.Schema.ObjectId,
+      ref: 'Category',
+      required: [true, 'Product must be belong to category'],
     },
+    subcategories: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: 'SubCategory',
+      },
+    ],
     // interest: [
     //   {
     //     type: Schema.Types.ObjectId,
@@ -94,8 +104,48 @@ const productSchema = new Schema(
   },
 
   
-  { timestamps: true, autoIndex: true, autoCreate: true }
+  { timestamps: true, autoIndex: true, autoCreate: true , toJSON: { virtuals: true }, toObject: { virtuals: true }}
 );
+
+// productSchema.virtual('reviews', {
+//   ref: 'Review',
+//   foreignField: 'product',
+//   localField: '_id',
+// });
+
+// Mongoose query middleware
+productSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'category',
+    select: 'name -_id',
+  });
+  next();
+});
+
+const setImageURL = (doc) => {
+  if (doc.imageCover) {
+    const imageUrl = `${process.env.BASE_URL}/products/${doc.imageCover}`;
+    doc.imageCover = imageUrl;
+  }
+  if (doc.images) {
+    const imagesList = [];
+    doc.images.forEach((image) => {
+      const imageUrl = `${process.env.BASE_URL}/products/${image}`;
+      imagesList.push(imageUrl);
+    });
+    doc.images = imagesList;
+  }
+};
+// findOne, findAll and update
+productSchema.post('init', (doc) => {
+  setImageURL(doc);
+});
+
+// create
+productSchema.post('save', (doc) => {
+  setImageURL(doc);
+});
+
 
 const products = model("product", productSchema);
 
