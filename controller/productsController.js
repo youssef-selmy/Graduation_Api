@@ -222,6 +222,7 @@ exports.addProductToShop = async (req, res) => {
     variations: req.body.variations.split(","),
     category: req.body.category,
     subcategories:req.body.subcategories,
+    brand:req.body.brand,
     interest: req.body.interest,
     discountedPrice: req.body.discountedPrice,
   };
