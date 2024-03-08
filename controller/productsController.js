@@ -1,65 +1,109 @@
 const mongoose = require("mongoose");
 
-
-
-const asyncHandler = require('express-async-handler');
-const { v4: uuidv4 } = require('uuid');
-const sharp = require('sharp');
-const handlersFactory=require('./handlersFactoryController')
+const asyncHandler = require("express-async-handler");
+const { v4: uuidv4 } = require("uuid");
+const sharp = require("sharp");
+const cloudinary = require("cloudinary").v2;
+const handlersFactory = require("./handlersFactoryController");
 const productModel = require("../models/productModel");
-const { uploadMixOfImages } = require('../middlewares/uploadImageMiddleware');
+const { uploadMixOfImages } = require("../middlewares/uploadImageMiddleware");
 // const shopModel = require("../models/shopSchema");
 // const reviewModel = require("../models/reviews");
 // const channelModel = require("../models/channelSchema");
 
-
-
-
 exports.uploadProductImages = uploadMixOfImages([
   {
-    name: 'imageCover',
+    name: "imageCover",
     maxCount: 1,
   },
   {
-    name: 'images',
+    name: "images",
     maxCount: 5,
   },
 ]);
 
 exports.resizeProductImages = asyncHandler(async (req, res, next) => {
-  // console.log(req.files);
-  //1- Image processing for imageCover
-  if (req.files.imageCover) {
-    const imageCoverFileName = `product-${uuidv4()}-${Date.now()}-cover.jpeg`;
+  
+  try {
+    
+    // Initialize Cloudinary configuration
+    cloudinary.config({
+      cloud_name: "dew24xujs",
+      api_key: "513942924689786",
+      api_secret: "IENaRv4j2OOeIWAPc9v0ayx98Vk",
+    });
 
-    await sharp(req.files.imageCover[0].buffer)
-      .resize(2000, 1333)
-      .toFormat('jpeg')
-      .jpeg({ quality: 95 })
-      .toFile(`uploads/products/${imageCoverFileName}`);
+    // Image processing for imageCover
+    if (req.files.imageCover) {
+      const imageCoverBuffer = req.files.imageCover[0].buffer;
 
-    // Save image into our db
-    req.body.imageCover = imageCoverFileName;
-  }
-  //2- Image processing for images
-  if (req.files.images) {
-    req.body.images = [];
-    await Promise.all(
-      req.files.images.map(async (img, index) => {
-        const imageName = `product-${uuidv4()}-${Date.now()}-${index + 1}.jpeg`;
+      const imageCover =  cloudinary.uploader.upload_stream(
+        {
+          folder: "products",
+          public_id: `product-${uuidv4()}-cover`,
+          format: "jpg",
+          quality: "auto:best",
+        },
+        (error, result) => {
+          if (error) {
+            console.error("Error uploading image cover:", error);
+            return next(error); // Pass the error to the error handling middleware
+          }
+          const url=result.secure_url;
+          console.log(url)
+          req.body.imageCover = url;
+          // console.log(result)
+          // Check if there are any other images to process before calling next()
+          checkAndCallNext();
+        }
+      );
 
-        await sharp(img.buffer)
-          .resize(2000, 1333)
-          .toFormat('jpeg')
-          .jpeg({ quality: 95 })
-          .toFile(`uploads/products/${imageName}`);
+      imageCover.end(imageCoverBuffer);
+    }
 
-        // Save image into our db
-        req.body.images.push(imageName);
-      })
-    );
+    // Image processing for images
+    if (req.files.images) {
+      req.body.images = [];
 
-    next();
+      await Promise.all(
+        req.files.images.map(async (img, index) => {
+          const imageName = `product-${uuidv4()}-${Date.now()}-${index + 1}`;
+
+          const imageBuffer = img.buffer;
+
+          const uploadedImage = await cloudinary.uploader.upload_stream(
+            {
+              folder: "products",
+              public_id: imageName,
+              format: "jpg",
+              quality: "auto:best",
+            },
+            (error, result) => {
+              if (error) {
+                console.error("Error uploading image:", error);
+                return next(error); // Pass the error to the error handling middleware
+              }
+              req.body.images.push(result.secure_url);
+              // Check if there are any other images to process before calling next()
+              checkAndCallNext();
+            }
+          );
+
+          uploadedImage.end(imageBuffer);
+        })
+      );
+    }
+
+    // Function to check if all image processing is complete and then call next()
+    function checkAndCallNext() {
+      if (!req.files.imageCover || req.body.imageCover) {
+        if (!req.files.images || req.body.images.length === req.files.images.length) {
+          next();
+        }
+      }
+    }
+  } catch (error) {
+    next(error); // Pass any unexpected errors to the error handling middleware
   }
 });
 
@@ -104,7 +148,6 @@ exports.channelProducts = async function (req, res) {
 
 exports.interestProducts = async function (req, res) {
   try {
-	 
     const products = await productModel
       .find({
         $and: [
@@ -179,9 +222,7 @@ exports.relatedProducts = async function (req, res) {
   }
 };
 
-exports.getProducts= handlersFactory.getAll(productModel,"product")
-
-
+exports.getProducts = handlersFactory.getAll(productModel, "product");
 
 exports.productQtyCheck = async (req, res) => {
   let product = await productModel.findById(req.body.productId);
@@ -208,21 +249,20 @@ exports.deleteProductReviewsById = async (req, res) => {
   }
 };
 
-
 exports.addProductToShop = async (req, res) => {
   const newProduct = {
     name: req.body.name,
     price: req.body.price,
     quantity: req.body.quantity,
     images: req.body.images,
-    imageCover:req.body.imageCover,
+    imageCover: req.body.imageCover,
     // shopId: mongoose.mongo.ObjectId(req.params.shopId),
     ownerId: req.user.id,
     description: req.body.description,
     variations: req.body.variations.split(","),
     category: req.body.category,
-    subcategories:req.body.subcategories,
-    brand:req.body.brand,
+    subcategories: req.body.subcategories,
+    brand: req.body.brand,
     interest: req.body.interest,
     discountedPrice: req.body.discountedPrice,
   };
@@ -237,8 +277,8 @@ exports.addProductToShop = async (req, res) => {
     //       path: "shopId",
     //     },
     //   })
-      // .populate("reviews")
-      // .populate("interest");
+    // .populate("reviews")
+    // .populate("interest");
 
     // newProd.shopId = null;
     // newProd.ownerId = null;
@@ -255,46 +295,41 @@ exports.addProductToShop = async (req, res) => {
   }
 };
 
-
-
 exports.getProductById = async (req, res) => {
-	console.log("getProductById",req.params.productId)
+  console.log("getProductById", req.params.productId);
   try {
-    let product = await productModel
-      .findById(req.params.productId)
-      // .populate("shopId")
-      // .populate("interest")
-      // .populate("reviews")
-      // .populate({
-      //   path: "ownerId",
-      //   populate: {
-      //     path: "payoutmethod",
-      //   },
-      // });
-    console.log(product)
+    let product = await productModel.findById(req.params.productId);
+    // .populate("shopId")
+    // .populate("interest")
+    // .populate("reviews")
+    // .populate({
+    //   path: "ownerId",
+    //   populate: {
+    //     path: "payoutmethod",
+    //   },
+    // });
+    console.log(product);
     res.status(200).setHeader("Content-Type", "application/json").json(product);
   } catch (error) {
-    res 
+    res
       .status(422)
       .setHeader("Content-Type", "application/json")
       .json(error.message);
   }
 };
 
-exports.updateProductById = handlersFactory.updateOne(productModel)
+exports.updateProductById = handlersFactory.updateOne(productModel);
 
 exports.updateProductImages = async (req, res) => {
   let newObj = {
     images: req.body.images,
   };
   try {
-    let newProduct = await productModel
-      .findByIdAndUpdate(
-        req.params.productId,
-        { $set: newObj },
-        { runValidators: true, new: true }
-      )
-      
+    let newProduct = await productModel.findByIdAndUpdate(
+      req.params.productId,
+      { $set: newObj },
+      { runValidators: true, new: true }
+    );
 
     //     newProduct.shopId = null;
     //     newProduct.ownerId = null;
@@ -311,4 +346,4 @@ exports.updateProductImages = async (req, res) => {
   }
 };
 
-exports.deleteProductById = handlersFactory.deleteOne(productModel)
+exports.deleteProductById = handlersFactory.deleteOne(productModel);

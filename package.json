@@ -6,13 +6,13 @@
   "scripts": {
     "dev": "nodemon server.js",
     "start": "NODE_ENV=production node server.js"
-    
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "cloudinary": "^2.0.3",
     "colors": "^1.4.0",
     "compression": "^1.7.4",
     "cors": "^2.8.5",

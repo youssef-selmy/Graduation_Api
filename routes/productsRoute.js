@@ -1,7 +1,6 @@
 const express = require("express");
 
 const productRouter = express.Router();
-const multer = require("multer");
 const {
   addProductToShop,
   updateProductById,
@@ -12,6 +11,7 @@ const {
   productQtyCheck,
   getProducts
 } = require("../controller/productsController");
+
 const {protect} = require("../controller/authController");
 // const subscriptionController = require('../controllers/subscription')
 
@@ -35,8 +35,8 @@ productRouter
   .route("/:id")
   .put(
     protect,
-    //  uploadProductImages,
-    //  resizeProductImages,
+    uploadProductImages,
+    resizeProductImages,
     updateProductById
   )
   .delete(
