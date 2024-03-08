@@ -139,14 +139,14 @@ const setImageURL = (doc) => {
   }
 };
 // findOne, findAll and update
-productSchema.post('init', (doc) => {
-  setImageURL(doc);
-});
+// productSchema.post('init', (doc) => {
+//   setImageURL(doc);
+// });
 
 // create
-productSchema.post('save', (doc) => {
-  setImageURL(doc);
-});
+// productSchema.post('save', (doc) => {
+//   setImageURL(doc);
+// });
 
 
 const products = model("product", productSchema);
