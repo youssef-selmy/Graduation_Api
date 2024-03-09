@@ -14,9 +14,9 @@ exports.resizeImage = asyncHandler(async (req, res, next) => {
   try {
     // Initialize Cloudinary configuration
     cloudinary.config({
-      cloud_name: "dew24xujs",
-      api_key: "513942924689786",
-      api_secret: "IENaRv4j2OOeIWAPc9v0ayx98Vk",
+      cloud_name: process.env.cloud_name,
+      api_key: process.env.api_key,
+      api_secret: process.env.api_secret,
     });
 
     if (req.file) {
