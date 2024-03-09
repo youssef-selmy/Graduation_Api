@@ -25,13 +25,13 @@ const setImageURL = (doc) => {
   }
 };
 // findOne, findAll and update
-brandSchema.post('init', (doc) => {
-  setImageURL(doc);
-});
+// brandSchema.post('init', (doc) => {
+//   setImageURL(doc);
+// });
 
-// create
-brandSchema.post('save', (doc) => {
-  setImageURL(doc);
-});
+// // create
+// brandSchema.post('save', (doc) => {
+//   setImageURL(doc);
+// });
 // 2- Create model
 module.exports = mongoose.model('Brand', brandSchema);

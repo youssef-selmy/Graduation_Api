@@ -25,15 +25,15 @@ const setImageURL = (doc) => {
     doc.image = imageUrl;
   }
 };
-// findOne, findAll and update
-categorySchema.post('init', (doc) => {
-  setImageURL(doc);
-});
+// // findOne, findAll and update
+// categorySchema.post('init', (doc) => {
+//   setImageURL(doc);
+// });
 
-// create
-categorySchema.post('save', (doc) => {
-  setImageURL(doc);
-});
+// // create
+// categorySchema.post('save', (doc) => {
+//   setImageURL(doc);
+// });
 
 // 2- Create model
 const CategoryModel = mongoose.model('Category', categorySchema);

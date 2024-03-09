@@ -1,7 +1,7 @@
 const asyncHandler = require('express-async-handler');
 const { v4: uuidv4 } = require('uuid');
 const sharp = require('sharp');
-
+const cloudinary = require('cloudinary').v2;
 const factory = require('./handlersFactoryController');
 const { uploadSingleImage } = require('../middlewares/uploadImageMiddleware');
 const Brand = require('../models/brandModel');
@@ -11,18 +11,32 @@ exports.uploadBrandImage = uploadSingleImage('image');
 
 // Image processing
 exports.resizeImage = asyncHandler(async (req, res, next) => {
-  const filename = `brand-${uuidv4()}-${Date.now()}.jpeg`;
+  try {
+    // Initialize Cloudinary configuration
+    cloudinary.config({
+      cloud_name: "dew24xujs",
+      api_key: "513942924689786",
+      api_secret: "IENaRv4j2OOeIWAPc9v0ayx98Vk",
+    });
 
-  await sharp(req.file.buffer)
-    .resize(600, 600)
-    .toFormat('jpeg')
-    .jpeg({ quality: 95 })
-    .toFile(`uploads/brands/${filename}`);
+    if (req.file) {
+      const fileBuffer = req.file.buffer;
+      const base64str = `data:${req.file.mimetype};base64,${fileBuffer.toString('base64')}`;
+      
+      const result = await cloudinary.uploader.upload(base64str, {
+        folder: "brands",
+        format: "jpg",
+        quality: "auto:best",
+      });
 
-  // Save image into our db 
-   req.body.image = filename;
+      // Save image URL into our db
+      req.body.image = result.secure_url;
+    }
 
-  next();
+    next();
+  } catch (error) {
+    next(error);
+  }
 });
 
 // @desc    Get list of brands

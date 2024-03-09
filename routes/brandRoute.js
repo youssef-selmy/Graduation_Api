@@ -37,8 +37,8 @@ router
   .put(
     authService.protect,
     // authService.allowedTo('admin', 'manager'),
-    // uploadBrandImage,
-    // resizeImage,
+    uploadBrandImage,
+    resizeImage,
     updateBrandValidator,
     updateBrand
   )
