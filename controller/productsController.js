@@ -259,7 +259,7 @@ exports.addProductToShop = async (req, res) => {
     // shopId: mongoose.mongo.ObjectId(req.params.shopId),
     ownerId: req.user.id,
     description: req.body.description,
-    variations: req.body.variations.split(","),
+    colors: req.body.colors,
     category: req.body.category,
     subcategories: req.body.subcategories,
     brand: req.body.brand,
