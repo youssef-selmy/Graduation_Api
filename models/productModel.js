@@ -50,9 +50,7 @@ const productSchema = new Schema(
       required: [true, 'Product Image cover is required'],
     },
     images: [String],
-    variations: {
-      type: Array,
-    },
+    colors: [String],
     category: {
       type: mongoose.Schema.ObjectId,
       ref: 'Category',
