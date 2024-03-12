@@ -27,7 +27,7 @@ productRouter
 
 productRouter
   .route("/:productId")
-  .get(protect,getProductById)
+  .get(getProductById)
  
 
 
