@@ -26,12 +26,12 @@ const productSchema = new Schema(
       min: 0,
       required: true,
     },
-    // reviews: [
-    //   {
-    //     type: Schema.Types.ObjectId,
-    //     ref: "review",
+     //reviews: [
+      // {
+       //  type: Schema.Types.ObjectId,
+       //  ref: "reviews",
     //   },
-    // ],
+     //],
     deleted: {
       type: Boolean,
       default: false,
@@ -110,7 +110,7 @@ const productSchema = new Schema(
  productSchema.virtual('reviews', {
    ref: 'Review',
    foreignField: 'product',
-   localField: '_id',
+  localField: '_id',
  });
 
 // Mongoose query middleware
