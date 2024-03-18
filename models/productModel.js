@@ -107,11 +107,11 @@ const productSchema = new Schema(
   { timestamps: true, autoIndex: true, autoCreate: true , toJSON: { virtuals: true }, toObject: { virtuals: true }}
 );
 
-// productSchema.virtual('reviews', {
-//   ref: 'Review',
-//   foreignField: 'product',
-//   localField: '_id',
-// });
+ productSchema.virtual('reviews', {
+   ref: 'Review',
+   foreignField: 'product',
+   localField: '_id',
+ });
 
 // Mongoose query middleware
 productSchema.pre(/^find/, function (next) {
