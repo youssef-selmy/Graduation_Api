@@ -26,12 +26,12 @@ const productSchema = new Schema(
       min: 0,
       required: true,
     },
-     //reviews: [
-      // {
-       //  type: Schema.Types.ObjectId,
-       //  ref: "reviews",
+    //  reviews: [
+    //   {
+    //     type: Schema.Types.ObjectId,
+    //     ref: "Review",
     //   },
-     //],
+    //  ],
     deleted: {
       type: Boolean,
       default: false,

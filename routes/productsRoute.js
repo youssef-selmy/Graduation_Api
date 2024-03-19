@@ -1,4 +1,5 @@
 const express = require("express");
+const reviewsRoute = require('./reviewRoute');
 
 const productRouter = express.Router();
 const {
@@ -15,7 +16,10 @@ const {
 const {protect} = require("../controller/authController");
 // const subscriptionController = require('../controllers/subscription')
 
-
+// POST   /products/jkshjhsdjh2332n/reviews
+// GET    /products/jkshjhsdjh2332n/reviews
+// GET    /products/jkshjhsdjh2332n/reviews/87487sfww3
+productRouter.use('/:productId/reviews', reviewsRoute);
 
 
 productRouter
