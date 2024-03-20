@@ -5,7 +5,7 @@ const ApiError = require('../utils/apiError');
 
 const User = require('../models/userModel');
 const Product = require('../models/productModel');
-// const Cart = require('../models/cartModel');
+const Cart = require('../models/cartModel');
 const Order = require('../models/oroderModel');
 
 // @desc    create cash order
