@@ -19,6 +19,8 @@ const subCategoryRoute=require('./routes/subCategoryRoute')
 const productsRoute=require('./routes/productsRoute')
 const brandRoute=require('./routes/brandRoute')
 const reviewRoute=require('./routes/reviewRoute')
+const cartRoute=require('./routes/cartRoute')
+const orderRoute=require('./routes/orderRoute')
 
 // Connect with db
  dbConnection();
@@ -77,6 +79,8 @@ app.use('/api/v1/subcategory',subCategoryRoute)
 app.use('/api/v1/products',productsRoute)
 app.use('/api/v1/brands',brandRoute)
 app.use('/api/v1/reviews',reviewRoute)
+app.use('/api/v1/cart',cartRoute)
+app.use('/api/v1/reviews',orderRoute)
 
 
 
