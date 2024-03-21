@@ -104,7 +104,7 @@ const productSchema = new Schema(
   },
 
   
-  { timestamps: true, autoIndex: true, autoCreate: true , toJSON: { virtuals: true }, toObject: { virtuals: true }}
+  { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true }}
 );
 
  productSchema.virtual('reviews', {
