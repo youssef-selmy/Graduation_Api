@@ -12,6 +12,7 @@ dotenv.config({ path: 'config.env' });
 const ApiError = require('./utils/apiError');
 const globalError = require('./middlewares/errorMiddleware');
 const dbConnection = require('./config/database');
+const { webhookCheckout } = require('./controller/orderController');
 // Routes
 const authRoute=require('./routes/authRoute')
 const categoryRoute=require('./routes/categoryRoute')
@@ -39,6 +40,12 @@ app.options('*', cors());
 // compress all responses
 app.use(compression());
 
+// Checkout webhook
+app.post(
+  '/webhook-checkout',
+  express.raw({ type: 'application/json' }),
+  webhookCheckout
+);
 // Middlewares
 app.use(express.json({ limit: '20kb' }));
 app.use(express.static(path.join(__dirname, 'uploads')));
@@ -80,7 +87,8 @@ app.use('/api/v1/products',productsRoute)
 app.use('/api/v1/brands',brandRoute)
 app.use('/api/v1/reviews',reviewRoute)
 app.use('/api/v1/cart',cartRoute)
-app.use('/api/v1/reviews',orderRoute)
+app.use('/api/v1/orders',orderRoute)
+
 
 
 
