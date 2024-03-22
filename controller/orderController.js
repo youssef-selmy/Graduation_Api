@@ -1,4 +1,4 @@
-const stripe = require('stripe')(process.env.STRIPE_SECRET);
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const asyncHandler = require('express-async-handler');
 const factory = require('./handlersFactoryController');
 const ApiError = require('../utils/apiError');
