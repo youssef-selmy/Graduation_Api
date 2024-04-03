@@ -23,6 +23,7 @@ const reviewRoute=require('./routes/reviewRoute')
 const cartRoute=require('./routes/cartRoute')
 const orderRoute=require('./routes/orderRoute')
 const adressRoute=require('./routes/adressRoute')
+const wishlistRoute = require('./routes/wishlistRoute');
 
 // Connect with db
  dbConnection();
@@ -90,6 +91,7 @@ app.use('/api/v1/reviews',reviewRoute)
 app.use('/api/v1/cart',cartRoute)
 app.use('/api/v1/orders',orderRoute)
 app.use('/api/v1/adress',adressRoute)
+app.use('/api/v1/wishlist', wishlistRoute);
 
 
 
