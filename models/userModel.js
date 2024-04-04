@@ -45,7 +45,7 @@ const userSchema = new mongoose.Schema(
     wishlist: [
       {
         type: mongoose.Schema.ObjectId,
-        ref: 'Product',
+        ref: 'product',
       },
     ],
     addresses: [
