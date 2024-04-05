@@ -35,14 +35,14 @@ router
   .route('/:id')
   .get(getReviewValidator, getReview)
   .put(
-    authService.protect,
-    authService.allowedTo('user'),
+ //   authService.protect,
+  //  authService.allowedTo('user'),
     updateReviewValidator,
     updateReview
   )
   .delete(
-    authService.protect,
-    authService.allowedTo('user', 'manager', 'admin'),
+ //   authService.protect,
+  //  authService.allowedTo('user', 'manager', 'admin'),
     deleteReviewValidator,
     deleteReview
   );
