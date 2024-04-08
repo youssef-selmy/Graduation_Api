@@ -42,7 +42,7 @@ router
   )
   .delete(
    authService.protect,
-  //  authService.allowedTo('user', 'manager', 'admin'),
+   authService.allowedTo('user', 'manager', 'admin'),
     deleteReviewValidator,
     deleteReview
   );
