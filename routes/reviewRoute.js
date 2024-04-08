@@ -35,8 +35,8 @@ router
   .route('/:id')
   .get(getReviewValidator, getReview)
   .put(
- //   authService.protect,
-  //  authService.allowedTo('user'),
+   authService.protect,
+    authService.allowedTo('user'),
     updateReviewValidator,
     updateReview
   )
