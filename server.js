@@ -58,15 +58,15 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 // Limit each IP to 100 requests per `window` (here, per 15 minutes)
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100,
-  message:
-    'Too many accounts created from this IP, please try again after an hour',
-});
+//const limiter = rateLimit({
+//  windowMs: 15 * 60 * 1000, // 15 minutes
+//  max: 100,
+//  message:
+//    'Too many accounts created from this IP, please try again after an hour',
+//});
 
 // Apply the rate limiting middleware to all requests
-app.use('/api', limiter);
+//app.use('/api', limiter);
 
 // Middleware to protect against HTTP Parameter Pollution attacks
 app.use(
