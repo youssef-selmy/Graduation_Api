@@ -41,7 +41,7 @@ router
     updateReview
   )
   .delete(
- //   authService.protect,
+   authService.protect,
   //  authService.allowedTo('user', 'manager', 'admin'),
     deleteReviewValidator,
     deleteReview
