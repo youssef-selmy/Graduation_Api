@@ -14,6 +14,7 @@ const globalError = require('./middlewares/errorMiddleware');
 const dbConnection = require('./config/database');
 const { webhookCheckout } = require('./controller/orderController');
 // Routes
+const userRoute = require('./routes/userRoute');
 const authRoute=require('./routes/authRoute')
 const categoryRoute=require('./routes/categoryRoute')
 const subCategoryRoute=require('./routes/subCategoryRoute')
@@ -84,6 +85,7 @@ app.use(
 
 // Mount Routes
 app.use('/api/v1/auth',authRoute)
+app.use('/api/v1/users', userRoute);
 app.use('/api/v1/category',categoryRoute)
 app.use('/api/v1/subcategory',subCategoryRoute)
 app.use('/api/v1/products',productsRoute)
