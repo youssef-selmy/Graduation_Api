@@ -36,13 +36,13 @@ roomRouter
 
 roomRouter.route("/ended/:roomId").get(roomController.getDeletedRoomById);
 
-roomRouter.route("/stoprecording/:sid").post(roomController.stopRecording);     //to do
+// roomRouter.route("/stoprecording/:sid").post(roomController.stopRecording);     //to do
 
 roomRouter.route("/update-subscription-minutes").patch(roomController.updateSubMinutes)   //to do 
 
 roomRouter.route("/updateVideo-subscription-minutes").patch(roomController.updateSubMinutesForVideo)  //to do
 
-roomRouter.route("/record/:channelname").post(roomController.recordRoom);   //to do
+// roomRouter.route("/record/:channelname").post(roomController.recordRoom);   //to do
 
 roomRouter.route("/get/all/:userId").get(roomController.getRoomsByUserId);
 
