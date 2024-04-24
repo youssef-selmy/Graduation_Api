@@ -6,7 +6,8 @@ const {
   addAddress,
   removeAddress,
   getLoggedUserAddresses,
-  updateAddress
+  updateAddress,
+  getAddressById
 } = require('../controller/adressController');
 
 const router = express.Router();
@@ -17,5 +18,6 @@ router.route('/').post(addAddress).get(getLoggedUserAddresses);
 
 router.delete('/:addressId', removeAddress);
 router.put('/:addressId',updateAddress);
+router.get('/:addressId',getAddressById);
 
 module.exports = router;

@@ -87,3 +87,35 @@ exports.updateAddress = asyncHandler(async (req, res, next) => {
     data: user.addresses,
   });
 });
+
+
+// @desc    Get address by ID from user addresses list
+// @route   GET /api/v1/addresses/:addressId
+// @access  Protected/User
+exports.getAddressById = asyncHandler(async (req, res, next) => {
+  const { addressId } = req.params;
+  const userId = req.user._id;
+
+  const user = await User.findById(userId);
+
+  if (!user) {
+    return res.status(404).json({
+      status: 'fail',
+      message: 'User not found.',
+    });
+  }
+
+  const address = user.addresses.find(addr => addr._id.toString() === addressId);
+
+  if (!address) {
+    return res.status(404).json({
+      status: 'fail',
+      message: 'Address not found.',
+    });
+  }
+
+  res.status(200).json({
+    status: 'success',
+    data: address,
+  });
+});
