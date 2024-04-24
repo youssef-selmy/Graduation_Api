@@ -6,7 +6,7 @@ const utils = require("../notficationUtils");
 
 const OneSignal = "@onesignal/node-onesignal";
 const BASE_URL = "https://onesignal.com/api/v1";
-const request = require("request");
+// const request = require("request");
 // var payouthodModel = require("../models/payout_methods");
 
 async function saveActivity(
