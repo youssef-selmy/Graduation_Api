@@ -516,8 +516,8 @@
       const expirationTimeInSeconds = 84600;
       const currentTimestamp = Math.floor(Date.now() / 1000);
       const privilegeExpiredTs = currentTimestamp + expirationTimeInSeconds;
-      var response = await functions.getSettings();
-      console.log(response);
+      // var response = await functions.getSettings();
+      // console.log(response);
       const token = RtmTokenBuilder.buildToken(
         "eaa1810d9a4a477d97053548a5ef7819", //app id
         "dfa7fcd91d5c47058bbacd8f21701b3a",//app cer
@@ -545,7 +545,7 @@
       const currentTimestamp = Math.floor(Date.now() / 1000);
       const privilegeExpiredTs = currentTimestamp + expirationTimeInSeconds;
   
-      var response = await functions.getSettings();
+      // var response = await functions.getSettings();
       const token = RtmTokenBuilder.buildToken(
         "eaa1810d9a4a477d97053548a5ef7819", 
         "dfa7fcd91d5c47058bbacd8f21701b3a",
