@@ -54,3 +54,36 @@ exports.getLoggedUserAddresses = asyncHandler(async (req, res, next) => {
     data: user.addresses,
   });
 });
+
+
+// @desc    Update address in user addresses list
+// @route   PUT /api/v1/addresses/:addressId
+// @access  Protected/User
+exports.updateAddress = asyncHandler(async (req, res, next) => {
+  const { addressId } = req.params;
+  const userId = req.user._id;
+  const updatedAddress = req.body;
+
+  const user = await User.findOneAndUpdate(
+    { _id: userId, 'addresses._id': addressId }, // Find user by ID and address by addressId
+    {
+      $set: {
+        'addresses.$': updatedAddress, // Update the matched address with new data
+      },
+    },
+    { new: true }
+  );
+
+  if (!user) {
+    return res.status(404).json({
+      status: 'fail',
+      message: 'Address not found for the user.',
+    });
+  }
+
+  res.status(200).json({
+    status: 'success',
+    message: 'Address updated successfully.',
+    data: user.addresses,
+  });
+});

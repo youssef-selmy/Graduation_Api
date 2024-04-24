@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+
+const { Schema } = mongoose;
 const bcrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema(
@@ -41,11 +43,51 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    tokshows: {
+      type: Number,
+      default: 0,
+    },
+    interests: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "interest",
+      },
+    ],
+    channels: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "channel",
+      },
+    ],
+    currentRoom: {
+      type: String,
+      default: "",
+    },
     // child reference (one to many)
     wishlist: [
       {
         type: mongoose.Schema.ObjectId,
         ref: 'product',
+      },
+    ],
+
+    followersCount: {
+      type: Number,
+      default: 0
+    },
+    followingCount: {
+      type: Number,
+    },
+    followers: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+    following: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "User",
       },
     ],
     addresses: [
