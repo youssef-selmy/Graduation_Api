@@ -63,6 +63,10 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    notificationToken: {
+      type: String,
+      default: "",
+    },
     // child reference (one to many)
     wishlist: [
       {

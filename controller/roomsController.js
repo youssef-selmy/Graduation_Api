@@ -22,6 +22,7 @@
 //   var axios = require("axios");
   var mongoose = require("mongoose");
   const arrayToObjectIds = require("../utils/arrayToObjectIds");
+
 //   const { findByIdAndUpdate } = require("../models/orderSchema");
   
   exports.createRoom = async (req, res) => {
@@ -1214,130 +1215,99 @@
   };
   
   exports.sendRoomNotifications = async (req, res) => {
-    console.log("sendRoomNotifications");
-    console.log(req.body);
-    if (req.body.type == "liveposted") {
-      functions.sendNotificationToAll({
-        included_segments: ["Subscribed Users"],
-        data: { screen: "RoomScreen", id: req.body.room._id },
-        headings: {
-          en: `Join ${req.body.streamtypetype} Live TokShow by ${req.body.user.firstName}`,
-        },
-        contents: {
-          en: ` ${req.body.user.firstName} is live on ${req.body.streamtypetype} talking about ${req.body.room.productIds[0].name} click here to join watch.`,
-        },
-      });
-    }
+   
     if (req.body.type == "speaking") {
-      let userdata = await userModel
-        .findById(req.body.user._id)
-        .populate("followers", ["notificationToken", "_id"]);
-  
-      userdata.followers.forEach((user) => {
-        if (
-          user.notificationToken != "" &&
-          req.body.room.allUsers != null &&
-          req.body.room.allUsers.indexOf(user._id) == -1
-        ) {
-          functions.sendNotificationOneSignal(
-            [user.notificationToken],
-            userdata.firstName + " is live!",
-            userdata.firstName +
-              " is live talking about `" +
-              req.body.room.productIds[0].name +
-              "`. join them.",
-            "RoomScreen",
-            req.body.room._id
-          );
-        }
-      });
-  
-      let respnse = await roomsModel
-        .findByIdAndUpdate(
-          req.body.room._id,
-          {
-            $set: { speakersSentNotifications: [req.body.user._id] },
-          },
-          { new: true, runValidators: true }
-        )
-        .populate("hostIds", [
-          "firstName",
-          "lastName",
-          "bio",
-          "userName",
-          "email",
-          "profilePhoto",
-          "followersCount",
-          "followingCount",
-          "followers",
-          "following",
-        ])
-        .populate("userIds", [
-          "firstName",
-          "lastName",
-          "bio",
-          "userName",
-          "email",
-          "profilePhoto",
-          "followersCount",
-          "followingCount",
-          "followers",
-          "following",
-        ])
-        .populate("raisedHands", [
-          "firstName",
-          "lastName",
-          "bio",
-          "userName",
-          "email",
-          "profilePhoto",
-          "muted",
-        ])
-        .populate("speakerIds", [
-          "firstName",
-          "lastName",
-          "bio",
-          "userName",
-          "email",
-          "profilePhoto",
-          "followersCount",
-          "followingCount",
-          "followers",
-          "following",
-        ])
-        .populate("invitedIds", [
-          "firstName",
-          "lastName",
-          "bio",
-          "userName",
-          "email",
-          "profilePhoto",
-        ])
-        .populate({
-          path: "productIds",
-  
-          populate: {
-            path: "ownerId",
-  
-            populate: {
-              path: "shopId",
-            },
-          },
-        })
-        .populate("shopId", ["description", "image"])
-        .populate("ownerId", [
-          "firstName",
-          "lastName",
-          "bio",
-          "userName",
-          "email",
-          "profilePhoto",
-          "agorauid",
-          "roomuid",
-        ]);
-      res.status(200).setHeader("Content-Type", "application/json").json(respnse);
+        let room = await roomsModel.findById(req.body.roomId)
+        let roomUsers=room.allUsers;
+        // Send notifications to all users in the room
+        roomUsers.forEach((user) => {
+            if (user.notificationToken) {
+                functions.sendNotificationOneSignal(
+                    [user.notificationToken],
+                    "Live Update!",
+                    `${req.body.user.name} is live in the room, discussing ${req.body.room.productIds[0].name}. Join now!`,
+                    "RoomScreen",
+                    req.body.room._id
+                );
+            }
+        });
+
+        let respnse = await roomsModel
+            .findByIdAndUpdate(
+                req.body.room._id,
+                {
+                    $set: { speakersSentNotifications: [req.body.user._id] },
+                },
+                { new: true, runValidators: true }
+            )
+            .populate("hostIds", ["name", "email"])
+            .populate("userIds", [
+                "name",
+                "lastName",
+                "bio",
+                "userName",
+                "email",
+                "profilePhoto",
+                "followersCount",
+                "followingCount",
+                "followers",
+                "following",
+            ])
+            .populate("raisedHands", [
+                "name",
+                "lastName",
+                "bio",
+                "userName",
+                "email",
+                "profilePhoto",
+                "muted",
+            ])
+            .populate("speakerIds", [
+                "name",
+                "lastName",
+                "bio",
+                "userName",
+                "email",
+                "profilePhoto",
+                "followersCount",
+                "followingCount",
+                "followers",
+                "following",
+            ])
+            .populate("invitedIds", [
+                "name",
+                "lastName",
+                "bio",
+                "userName",
+                "email",
+                "profilePhoto",
+            ])
+            .populate({
+                path: "productIds",
+
+                populate: {
+                    path: "ownerId",
+
+                    populate: {
+                        path: "shopId",
+                    },
+                },
+            })
+            .populate("shopId", ["description", "image"])
+            .populate("ownerId", [
+                "name",
+                "lastName",
+                "bio",
+                "userName",
+                "email",
+                "profilePhoto",
+                "agorauid",
+                "roomuid",
+            ]);
+        res.status(200).setHeader("Content-Type", "application/json").json(respnse);
     }
-  };
+};
+
   
   exports.updateRoomById = async (req, res) => {
     try {

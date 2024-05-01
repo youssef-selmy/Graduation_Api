@@ -1,4 +1,5 @@
 // const activitiesModel = require("../models/activitySchema");
+const request = require("request");
 const userModel = require("../models/userModel");
 const utils = require("../notficationUtils");
 // const transactionModel = require("../models/transactionSchema");
@@ -6,7 +7,7 @@ const utils = require("../notficationUtils");
 
 const OneSignal = "@onesignal/node-onesignal";
 const BASE_URL = "https://onesignal.com/api/v1";
-// const request = require("request");
+ 
 // var payouthodModel = require("../models/payout_methods");
 
 async function saveActivity(
@@ -133,7 +134,7 @@ async function sendNotificationOneSignal(
     req.end();
   };
 
-  var response = await appSettings.find();
+  // var response = await appSettings.find();
 //   console.log("one signal id", response[0]["oneSignalAppID"]);
   var message = {
     app_id: "3c70978e-6b19-45b8-8448-385441b8ad18",
@@ -146,10 +147,10 @@ async function sendNotificationOneSignal(
   sendNotification(message);
 }
 
-async function getSettings() {
-  var response = await appSettings.find();
-  return response[0];
-}
+// async function getSettings() {
+//   var response = await appSettings.find();
+//   return response[0];
+// }
 
 const optionsBuilder = async (method, path, body) => {
   var response = await appSettings.find();
@@ -287,6 +288,6 @@ module.exports = {
   sendNotificationOneSignal,
   sendNotificationToAll,
   awardUser,
-  getSettings,
+  
   
 };

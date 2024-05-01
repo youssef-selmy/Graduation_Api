@@ -27,6 +27,7 @@ const adressRoute=require('./routes/adressRoute')
 const wishlistRoute = require('./routes/wishlistRoute');
 const couponRoute = require('./routes/couponRoute');
 const roomRoute = require('./routes/roomsRoute');
+const auctionRoute = require('./routes/auctionRoute');
 
 
 // Connect with db
@@ -99,6 +100,7 @@ app.use('/api/v1/adress',adressRoute)
 app.use('/api/v1/wishlist', wishlistRoute);
 app.use('/api/v1/coupons', couponRoute);
 app.use('/api/v1/rooms', roomRoute);
+app.use('/api/v1/auctions', auctionRoute);
 
 
 
