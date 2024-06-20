@@ -391,6 +391,7 @@
         hostIds: arrayToObjectIds([req.params.userId]),
         userIds: arrayToObjectIds(req.body.userIds),
         title: req.body.title,
+        "token":req.body.token,
         raisedHands: req.body.raisedHands,
         speakerIds: req.body.speakerIds,
         invitedIds: req.body.invitedIds,
