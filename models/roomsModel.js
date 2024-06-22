@@ -139,6 +139,10 @@ const roomSchema = new Schema(
     token: {
       type: String,
     },
+        RtmToken: {
+      type: String,
+    },
+    
     description: {
       type: String,
       default: "",
