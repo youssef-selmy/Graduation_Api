@@ -392,6 +392,7 @@
         userIds: arrayToObjectIds(req.body.userIds),
         title: req.body.title,
         "token":req.body.token,
+        "RtmToken":req.body.RtmToken,
         raisedHands: req.body.raisedHands,
         speakerIds: req.body.speakerIds,
         invitedIds: req.body.invitedIds,
