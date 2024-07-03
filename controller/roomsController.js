@@ -414,70 +414,70 @@
   
       let newRoom = await roomsModel.create(newObj);
   
-      for (let i = 0; i < user.followers.length; i++) {
-        functions.saveActivity(
-          newRoom._id,
-          user.name,
-          "RoomScreen",
-          false,
-          null,
-          user.followers[i]._id,
-          user.name + " created an event.",
-          user._id
-        );
-      }
+      // for (let i = 0; i < user.followers.length; i++) {
+      //   functions.saveActivity(
+      //     newRoom._id,
+      //     user.name,
+      //     "RoomScreen",
+      //     false,
+      //     null,
+      //     user.followers[i]._id,
+      //     user.name + " created an event.",
+      //     user._id
+      //   );
+      // }
   
-      functions.sendNotificationToAll({
-        included_segments: ["Subscribed Users"],
-        data: { screen: "EventScreen", id: newRoom._id },
-        headings: { en: "Upcoming TokShow" },
-        contents: {
-          en: ` ${user.name}  will be live on ${eventDate}, do you want to notified when they are live?.`,
-        },
-      });
+      // functions.sendNotificationToAll({
+      //   included_segments: ["Subscribed Users"],
+      //   data: { screen: "EventScreen", id: newRoom._id },
+      //   headings: { en: "Upcoming TokShow" },
+      //   contents: {
+      //     en: ` ${user.name}  will be live on ${eventDate}, do you want to notified when they are live?.`,
+      //   },
+      // });
   
-      let hostNotificationTokens = [];
+      // let hostNotificationTokens = [];
   
-      for (let i = 0; i < req.body.hostIds.length; i++) {
-        if (req.params.userId != req.body.hostIds[i]) {
-          var host = await userModel.findOne({ _id: req.body.hostIds[i] });
+      // for (let i = 0; i < req.body.hostIds.length; i++) {
+      //   if (req.params.userId != req.body.hostIds[i]) {
+      //     var host = await userModel.findOne({ _id: req.body.hostIds[i] });
   
-          console.log(host.notificationToken);
+      //     console.log(host.notificationToken);
   
-          if (host["notificationToken"] != "") {
-            console.log(host["notificationToken"]);
-            hostNotificationTokens.push(host["notificationToken"]);
-          }
-        }
-      }
+      //     if (host["notificationToken"] != "") {
+      //       console.log(host["notificationToken"]);
+      //       hostNotificationTokens.push(host["notificationToken"]);
+      //     }
+      //   }
+      // }
   
-      var userNotificationTokens = [];
+      // var userNotificationTokens = [];
   
-      if (req.body.roomType != "private") {
-        for (let i = 0; i < user.followers.length; i++) {
-          if (req.body.hostIds.indexOf(user.followers[i]) < 0) {
-            var follower = await userModel.findOne({ _id: user.followers[i] });
+      // if (req.body.roomType != "private") {
+      //   for (let i = 0; i < user.followers.length; i++) {
+      //     if (req.body.hostIds.indexOf(user.followers[i]) < 0) {
+      //       var follower = await userModel.findOne({ _id: user.followers[i] });
   
-            if (
-              follower["notificationToken"] != "" &&
-              !hostNotificationTokens.includes(follower["notificationToken"])
-            ) {
-              userNotificationTokens.push(follower["notificationToken"]);
-            }
-          }
-        }
-      }
+      //       if (
+      //         follower["notificationToken"] != "" &&
+      //         !hostNotificationTokens.includes(follower["notificationToken"])
+      //       ) {
+      //         userNotificationTokens.push(follower["notificationToken"]);
+      //       }
+      //     }
+      //   }
+      // }
   
-      if (hostNotificationTokens.length > 0) {
-        functions.sendNotificationOneSignal(
-          hostNotificationTokens,
-          "You've been invited",
-          user.name +
-            " has invited you to be a co-host in their event.",
-          "EventScreen",
-          newRoom._id
-        );
-      }
+      // if (hostNotificationTokens.length > 0) {
+      //   functions.sendNotificationOneSignal(
+      //     hostNotificationTokens,
+      //     "You've been invited",
+      //     user.name +
+      //       " has invited you to be a co-host in their event.",
+      //     "EventScreen",
+      //     newRoom._id
+      //   );
+      // }
   
       res.status(200).setHeader("Content-Type", "application/json").json({newRoom});
     } catch (error) {
