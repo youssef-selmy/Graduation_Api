@@ -52,34 +52,34 @@ exports.createAuction = async (req, res, next) => {
       )
       .populate("winner")
       .populate("winning")
-      .populate("bids")
-      .populate({
-        path: "product",
-        populate: {
-          path: "interest",
-        },
-      })
+     // .populate("bids")
+      // .populate({
+      //   path: "product",
+      //   populate: {
+      //     path: "interest",
+      //   },
+      // })
       .populate({
         path: "product",
         populate: {
           path: "reviews",
         },
       })
-      .populate({
-        path: "product",
-        populate: {
-          path: "shopId",
-        },
-      })
-      .populate({
-        path: "product",
-        populate: {
-          path: "ownerId",
-          populate: {
-            path: "shopId",
-          },
-        },
-      });
+      // .populate({
+      //   path: "product",
+      //   populate: {
+      //     path: "shopId",
+     //   },
+     // })
+      // .populate({
+      //   path: "product",
+      //   populate: {
+      //     path: "ownerId",
+      //     populate: {
+      //       path: "shopId",
+      //     },
+      //   },
+      // });
 
     await roomsModel.findByIdAndUpdate(
       req.body.tokshow,
